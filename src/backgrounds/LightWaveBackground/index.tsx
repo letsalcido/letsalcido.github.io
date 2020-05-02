@@ -11,7 +11,8 @@ let size: number = 60,
     renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer(),
     geometry: THREE.BufferGeometry,
     indices: number[],
-    positions: number[];
+    positions: number[],
+    amplitude: number = 1;
 
 function init() {
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -29,12 +30,12 @@ function init() {
     }));
     scene.add( mesh );
 
-    const light = new THREE.PointLight(0xffffff, 1.5 );
+    const light = new THREE.PointLight(0xffffff, 3 );
     light.position.set(0,size*2,50);
     scene.add(light);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1));
-    scene.fog = new THREE.Fog(0x000000, 20, 0);
+    scene.add(new THREE.AmbientLight(0xbb5842, 1));
+    scene.fog = new THREE.Fog(0x0B1620, 30, 0);
 
     [indices, positions] = Waves.generateIndexedTriangles(size,100, 0);
 }
@@ -56,11 +57,11 @@ const handleMouse = (e: any) => {
 function animate() {
     requestAnimationFrame( animate );
     geometry.setIndex(indices);
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute(computeWaves(positions, 0.8), 3));
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute(computeWaves(positions, amplitude), 3));
     geometry.computeVertexNormals();
     const cpos = initcpos.clone();
-    cpos.applyAxisAngle(new THREE.Vector3(0,1,0), cx);
-    cpos.applyAxisAngle(new THREE.Vector3(1,0,0), 0.2 * cy);
+    cpos.applyAxisAngle(new THREE.Vector3(0,1,0), 0.8 * cx);
+    cpos.applyAxisAngle(new THREE.Vector3(1,0,0), 0.1 * cy);
     cx += (mx - cx)/20;
     cy += (my - cy)/20;
     camera.position.x = cpos.x;

@@ -1,6 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@100;300;400;900&display=swap');
 @import '_variables.scss';
 
 html, body {
-  background: $primary-bg;
+  background: $bg-dark;
   color: $primary-text;
+  font-size: calc(10px + 0.8vh);
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $highlight-text;
+  font-weight: 300;
+}
+
+p {
+  line-height: 1.5em;
+}
+
+a {
+  color: $highlight-text;
 }

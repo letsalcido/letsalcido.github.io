@@ -1,6 +1,5 @@
-$primary-bg: #1d3e59;
-$primary-bg-dark: #0e1e2b;
-$primary-bg-light: #1e4763;
+$primary: #1d3e59;
+$bg-dark: #0b1620;
 
-$primary-text: lighten($primary-bg, 60);
-$primary-text-highlight: #FFF;
+$primary-text: lighten($primary, 60);
+$highlight-text: white;

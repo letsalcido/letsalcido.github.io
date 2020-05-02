@@ -4,28 +4,70 @@
 
 .appContainer {
   position: relative;
+  min-height: 100vh;
   z-index: 1;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+.header {
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 7vh 5vh 5vh;
+  align-items: center;
+  display: flex;
+  box-sizing: border-box;
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+  h2 {
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1rem;
+  }
+  h2, h3 {
+    margin: 0rem 0;
+    font-weight: 300;
   }
 }
 
-.appHeader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgba(0,0,0,0.2);
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: white;
+.content {
+  flex: 4;
+}
+
+.profilePic {
+  width: 75px;
+  height: 75px;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 100px;
+  margin-right: 2vh;
+
+  & > img {
+    max-width: 100%;
+  }
+}
+
+.pageWrapper {
+  display: flex;
+}
+
+.pageContainer {
+  margin: 5vh;
+  max-width: 600px;
+}
+
+@media screen and (orientation: landscape) {
+  .appContainer {
+    min-height: 80vh;
+    display: flex;
+  }
+  .header {
+    min-width: 350px;
+    max-width: 30vw;
+  }
+  .pageWrapper {
+    align-items: center;
+  }
+  .pageContainer {
+    align-items: center;
+  }
 }
