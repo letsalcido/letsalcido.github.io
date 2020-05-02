@@ -61,8 +61,8 @@ function animate() {
     const cpos = initcpos.clone();
     cpos.applyAxisAngle(new THREE.Vector3(0,1,0), cx);
     cpos.applyAxisAngle(new THREE.Vector3(1,0,0), 0.2 * cy);
-    cx += (mx - cx)/50;
-    cy += (my - cy)/50;
+    cx += (mx - cx)/20;
+    cy += (my - cy)/20;
     camera.position.x = cpos.x;
     camera.position.y = cpos.y;
     camera.position.z = cpos.z;
