@@ -1,16 +1,22 @@
 import React, {useEffect, useRef} from 'react';
 import styles from './Background.module.scss';
-import * as Waves from './waveUtils';
+import * as Waves from '../waveUtils';
 import * as THREE from 'three';
-import {computeWaves} from "./waveUtils";
+import * as d3 from 'd3-ease';
+import {computeWaves} from "../waveUtils";
 
 let size: number = 60,
+    amplitude: number = 0.8,
     scene: THREE.Scene = new THREE.Scene(),
     camera: THREE.PerspectiveCamera,
     initcpos: THREE.Vector3,
     renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer(),
     geometry: THREE.BufferGeometry,
-    triangles: number[];
+    triangles: number[],
+    ambient: THREE.AmbientLight,
+    light: THREE.PointLight,
+    ambientIntensity: number = 0.5,
+    lightIntensity: number = 2;
 
 function init() {
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -28,11 +34,12 @@ function init() {
     }));
     scene.add( mesh );
 
-    const light = new THREE.PointLight(0xffffff, 2 );
+    light = new THREE.PointLight(0xffffff, lightIntensity );
     light.position.set(0,size*2,50);
     scene.add(light);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    ambient = new THREE.AmbientLight(0xffffff, ambientIntensity);
+    scene.add(ambient);
     scene.fog = new THREE.Fog(0x000000, 30, 0);
 
     triangles = Waves.generateTriangles(size,100, 0.08);
@@ -52,15 +59,21 @@ const handleMouse = (e: any) => {
     my = ((e.clientY || my) - height/2)/height;
 };
 
+const handleScroll = () => {
+    let top = window.scrollY/height;
+    light.intensity = lightIntensity - lightIntensity * top * top * 0.6;
+    ambient.intensity = ambientIntensity * (1-d3.easeQuad(top));
+};
+
 function animate() {
     requestAnimationFrame( animate );
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute(computeWaves(triangles, 0.8), 3));
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute(computeWaves(triangles, amplitude), 3));
     geometry.computeVertexNormals();
     const cpos = initcpos.clone();
     cpos.applyAxisAngle(new THREE.Vector3(0,1,0), cx);
     cpos.applyAxisAngle(new THREE.Vector3(1,0,0), 0.2 * cy);
-    cx += (mx - cx)/100;
-    cy += (my - cy)/100;
+    cx += (mx - cx)/25;
+    cy += (my - cy)/25;
     camera.position.x = cpos.x;
     camera.position.y = cpos.y;
     camera.position.z = cpos.z;
@@ -81,10 +94,12 @@ export default function GeometricWaveBackground() : React.FunctionComponentEleme
 
     useEffect(() => {
         window.addEventListener('resize', handleScreenResize);
+        window.addEventListener('scroll', handleScroll);
         window.addEventListener('mousemove', handleMouse);
         handleScreenResize();
         return () => {
             window.removeEventListener('mousemove', handleMouse);
+            window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize',handleScreenResize);
         }
     }, []);

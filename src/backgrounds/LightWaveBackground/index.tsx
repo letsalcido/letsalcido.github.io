@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import styles from './Background.module.scss';
-import * as Waves from './waveUtils';
+import * as Waves from '../waveUtils';
 import * as THREE from 'three';
-import {computeWaves} from "./waveUtils";
+import {computeWaves} from "../waveUtils";
 
 let size: number = 60,
     scene: THREE.Scene = new THREE.Scene(),
