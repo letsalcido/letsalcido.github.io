@@ -2,16 +2,16 @@ import React, {useEffect, useRef} from 'react';
 import styles from './styles.module.scss';
 import * as THREE from 'three';
 
+const size = 40;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const camerapos = new THREE.Vector3(0,-4,10);
+const camerapos = new THREE.Vector3(0,-size/3,10);
 let zoom = 0.8;
 camerapos.multiplyScalar(1/zoom);
 camera.position.x = camerapos.x;
 camera.position.y = camerapos.y;
 camera.position.z = camerapos.z;
-camera.lookAt(0,0,0);
-const size = 40;
+camera.lookAt(0,-size/4,0);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio( window.devicePixelRatio );
@@ -27,7 +27,7 @@ const material = new THREE.MeshPhongMaterial({
 const mesh = new THREE.Mesh( geometry, material );
 scene.add( mesh );
 
-const light = new THREE.PointLight(0xffffff, 0.8 );
+const light = new THREE.PointLight(0xffffff, 1 );
 light.position.set(0,size*2,100);
 scene.add(light);
 
