@@ -11,8 +11,7 @@
 .header {
   top: 0;
   left: 0;
-  width: 100%;
-  padding: 7vh;
+  padding: 5vh;
   align-items: center;
   display: flex;
   box-sizing: border-box;
@@ -55,19 +54,35 @@
   max-width: 600px;
 }
 
+@media screen and (min-width: 500px) {
+  .pageContainer {
+    padding: 8vh;
+  }
+  .header {
+    padding: 8vh;
+  }
+}
+
 @media screen and (orientation: landscape) {
   .appContainer {
     min-height: 80vh;
     display: flex;
   }
   .header {
-    min-width: 350px;
+    min-width: calc(75px + 10rem);
     max-width: 30vw;
+    padding-right: 0;
   }
   .pageWrapper {
     align-items: center;
   }
   .pageContainer {
     align-items: center;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .header {
+    padding-bottom: 0;
   }
 }
