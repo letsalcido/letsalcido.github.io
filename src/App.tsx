@@ -23,9 +23,6 @@ function App() {
                   <WelcomePage/>
               </div>
           </div>
-          <div className={styles.sideAnnex}>
-
-          </div>
       </div>
     </div>
   );
