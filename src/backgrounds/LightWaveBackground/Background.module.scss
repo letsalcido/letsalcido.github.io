@@ -1,0 +1,10 @@
+@import '../../variables';
+
+.background {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  z-index: 0;
+  background: radial-gradient(lighten($primary-bg, 20), $primary-bg);
+}

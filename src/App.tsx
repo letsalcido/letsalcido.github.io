@@ -1,7 +1,7 @@
 import React from 'react';
 import './global.scss';
 import styles from './App.module.scss';
-import Background from './background';
+import Background from './backgrounds/LightWaveBackground';
 
 function App() {
   return (

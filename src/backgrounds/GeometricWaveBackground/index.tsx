@@ -67,7 +67,7 @@ function animate() {
     renderer.render( scene, camera );
 }
 
-export default function Background() : React.FunctionComponentElement<any> {
+export default function GeometricWaveBackground() : React.FunctionComponentElement<any> {
 
     const ref = useRef<HTMLDivElement>(null);
 
