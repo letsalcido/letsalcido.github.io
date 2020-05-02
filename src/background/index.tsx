@@ -1,96 +1,69 @@
 import React, {useEffect, useRef} from 'react';
-import styles from './styles.module.scss';
+import styles from './Background.module.scss';
+import * as Waves from './waveUtils';
 import * as THREE from 'three';
+import {computeWaves} from "./waveUtils";
 
-const size = 40;
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const camerapos = new THREE.Vector3(0,-size/3,10);
-let zoom = 0.8;
-camerapos.multiplyScalar(1/zoom);
-camera.position.x = camerapos.x;
-camera.position.y = camerapos.y;
-camera.position.z = camerapos.z;
-camera.lookAt(0,-size/4,0);
+let size: number = 60,
+    scene: THREE.Scene = new THREE.Scene(),
+    camera: THREE.PerspectiveCamera,
+    initcpos: THREE.Vector3,
+    renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer(),
+    geometry: THREE.BufferGeometry,
+    triangles: number[];
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setPixelRatio( window.devicePixelRatio );
-const setRendererSize = ()=> {
+function init() {
+    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    initcpos = new THREE.Vector3(0,-size/3,10);
+    camera.position.x = initcpos.x;
+    camera.position.y = initcpos.y;
+    camera.position.z = initcpos.z;
+    camera.lookAt(0,-size/4,0);
+
+    renderer.setPixelRatio( window.devicePixelRatio );
+
+    geometry = new THREE.BufferGeometry();
+    const mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial({
+        color: 0x18344a
+    }));
+    scene.add( mesh );
+
+    const light = new THREE.PointLight(0xffffff, 2 );
+    light.position.set(0,size*2,50);
+    scene.add(light);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    scene.fog = new THREE.Fog(0x000000, 30, 0);
+
+    triangles = Waves.generateTriangles(size,100, 0.08);
+};
+
+const handleScreenResize = ()=> {
     camera.aspect = window.innerWidth / window.innerHeight;
     renderer.setSize( window.innerWidth, window.innerHeight );
 };
 
-const geometry = new THREE.BufferGeometry();
-const material = new THREE.MeshPhongMaterial({
-    color: 0x18344a
-});
-const mesh = new THREE.Mesh( geometry, material );
-scene.add( mesh );
-
-const light = new THREE.PointLight(0xffffff, 1 );
-light.position.set(0,size*2,100);
-scene.add(light);
-
-const lightHelper = new THREE.PointLightHelper(light, 1);
-scene.add(lightHelper);
-
-const ambient = new THREE.AmbientLight(0xffffff, 1.5);
-scene.add(ambient);
-
-function generateTriangles() {
-    const indices = [];
-    const vertices = [];
-    const segments = 50;
-    const halfSize = size / 2;
-    const segmentSize = size / segments;
-    const depth = segmentSize * .20;
-
-    let i;
-    // generate vertices, normals and color data for a simple grid geometry
-    for (i = 0; i <= segments; i ++ ) {
-        let y = ( i * segmentSize ) - halfSize;
-        for ( let j = 0; j <= segments; j ++ ) {
-            let x = ( j * segmentSize ) - halfSize;
-            vertices.push( x, - y, Math.random() * depth * 2 - depth);
-        }
-    }
-
-    for (i = 0; i < segments; i ++ ) {
-        for (let j = 0; j < segments; j++) {
-            let a = i * (segments + 1) + (j + 1);
-            let b = i * (segments + 1) + j;
-            let c = (i + 1) * (segments + 1) + j;
-            let d = (i + 1) * (segments + 1) + (j + 1);
-            indices.push(a, b, d);
-            indices.push(b, c, d);
-        }
-    }
-
-    const nv = [];
-    for(i=0; i < indices.length; i++) {
-        nv.push(vertices[indices[i]*3], vertices[indices[i]*3+1], vertices[indices[i]*3+2]);
-    }
-    return nv;
-}
-const triangles = generateTriangles();
-
-function addWaves(triangles: number[], s: number) : number[] {
-    const nt = triangles.slice();
-    const speed = 0.5;
-    const amplitude = size/40;
-    for(let i=0; i < triangles.length; i+=3) {
-        const t = Date.now();
-        const cosxy = amplitude * Math.cos((nt[i] + nt[i+1]) * speed * 0.3 + 5);
-        const wave = Math.sin(speed*(t/1000 - nt[i]) + cosxy);
-        nt[i+2] += amplitude * wave;
-    }
-    return nt;
-}
+let width = window.innerWidth,
+    height = window.innerHeight,
+    [mx, my] = [0,0],
+    [cx,cy] = [mx,my];
+const handleMouse = (e: any) => {
+    mx = ((e.clientX || mx) - width/2)/width;
+    my = ((e.clientY || my) - height/2)/height;
+};
 
 function animate() {
     requestAnimationFrame( animate );
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute(addWaves(triangles, 0.1), 3));
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute(computeWaves(triangles, 0.8), 3));
     geometry.computeVertexNormals();
+    const cpos = initcpos.clone();
+    cpos.applyAxisAngle(new THREE.Vector3(0,1,0), cx);
+    cpos.applyAxisAngle(new THREE.Vector3(1,0,0), 0.2 * cy);
+    cx += (mx - cx)/100;
+    cy += (my - cy)/100;
+    camera.position.x = cpos.x;
+    camera.position.y = cpos.y;
+    camera.position.z = cpos.z;
     renderer.render( scene, camera );
 }
 
@@ -99,6 +72,7 @@ export default function Background() : React.FunctionComponentElement<any> {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        init();
         if(ref?.current) {
             ref.current.appendChild(renderer.domElement);
             animate();
@@ -106,10 +80,12 @@ export default function Background() : React.FunctionComponentElement<any> {
     }, [renderer.domElement]);
 
     useEffect(() => {
-        window.addEventListener('resize', setRendererSize);
-        setRendererSize();
+        window.addEventListener('resize', handleScreenResize);
+        window.addEventListener('mousemove', handleMouse);
+        handleScreenResize();
         return () => {
-            window.removeEventListener('resize',setRendererSize);
+            window.removeEventListener('mousemove', handleMouse);
+            window.removeEventListener('resize',handleScreenResize);
         }
     }, []);
 

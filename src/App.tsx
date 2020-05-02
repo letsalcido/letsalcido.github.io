@@ -5,11 +5,11 @@ import Background from './background';
 
 function App() {
   return (
-    <div className={styles.App}>
+    <div className={styles.app}>
       <Background />
-          {/*<header className={styles.AppHeader}>*/}
-          {/*    Luis Tadeo*/}
-          {/*</header>*/}
+      <div className={styles.appContainer}>
+
+      </div>
     </div>
   );
 }
