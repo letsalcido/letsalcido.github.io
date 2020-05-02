@@ -33,3 +33,7 @@ p {
 a {
   color: $highlight-text;
 }
+
+*:focus {
+  outline: none;
+}

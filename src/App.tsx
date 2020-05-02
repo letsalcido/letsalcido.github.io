@@ -1,8 +1,7 @@
 import React from 'react';
 import './global.scss';
 import styles from './App.module.scss';
-import img from './statics/profilePic.jpg';
-import Background from './backgrounds/LightWaveBackground';
+import Background from './backgrounds/GeometricWaveBackground';
 import WelcomePage from "./pages/welcome";
 
 function App() {
@@ -12,7 +11,7 @@ function App() {
       <div className={styles.appContainer}>
           <header className={styles.header}>
               <div className={styles.profilePic}>
-                  <img src={img} />
+                  <img src={"/statics/profilePic.jpg"} />
               </div>
               <div className={styles.content}>
                   <h2>Luis Tadeo</h2>
@@ -25,6 +24,7 @@ function App() {
               </div>
           </div>
           <div className={styles.sideAnnex}>
+
           </div>
       </div>
     </div>
